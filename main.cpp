@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <conio.h>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
@@ -10,7 +11,9 @@ struct Osoba {
     string imie, nazwisko, adres, numerTelefonu, adresEmail;
 };
 
-int wczytywanieKontaktowZPliku(Osoba osoby [], int iloscOsob) {
+vector <Osoba> osoby (1);
+
+int wczytywanieKontaktowZPliku(int iloscOsob) {
     fstream plik;
     string linia;
     int nr_linii = 1;
@@ -19,6 +22,7 @@ int wczytywanieKontaktowZPliku(Osoba osoby [], int iloscOsob) {
 
     if(plik.good()) {
         while(getline(plik, linia)) {
+
             switch(nr_linii) {
             case 1:
                 osoby[iloscOsob].id            = iloscOsob+1;
@@ -40,6 +44,7 @@ int wczytywanieKontaktowZPliku(Osoba osoby [], int iloscOsob) {
             if(nr_linii == 5) {
                 nr_linii = 0;
                 iloscOsob++;
+                osoby.push_back(Osoba());
             }
             nr_linii++;
         }
@@ -48,7 +53,7 @@ int wczytywanieKontaktowZPliku(Osoba osoby [], int iloscOsob) {
     } else return 0;
 }
 
-void zapisywanieKontaktowDoPliku(Osoba osoby [], int iloscOsob) {
+void zapisywanieKontaktowDoPliku(int iloscOsob) {
 
     fstream plik;
     plik.open("ksiazka_adresowa.txt", ios::out);
@@ -65,7 +70,7 @@ void zapisywanieKontaktowDoPliku(Osoba osoby [], int iloscOsob) {
     plik.close();
 }
 
-int dodajOsobeDoKontaktow(Osoba osoby [], int iloscOsob) {
+int dodajOsobeDoKontaktow(int iloscOsob) {
 
     string imie, nazwisko, adres, adresEmail, numerTelefonu;
 
@@ -88,6 +93,7 @@ int dodajOsobeDoKontaktow(Osoba osoby [], int iloscOsob) {
     cin.sync();
     getline(cin, adresEmail);
 
+    osoby.push_back(Osoba());
     osoby[iloscOsob].imie          = imie;
     osoby[iloscOsob].nazwisko      = nazwisko;
     osoby[iloscOsob].adres         = adres;
@@ -100,7 +106,7 @@ int dodajOsobeDoKontaktow(Osoba osoby [], int iloscOsob) {
     return iloscOsob+1;
 }
 
-void wyszukajPoImieniu(Osoba osoby [], int iloscOsob) {
+void wyszukajPoImieniu(int iloscOsob) {
 
     string imie;
     system("cls");
@@ -124,7 +130,7 @@ void wyszukajPoImieniu(Osoba osoby [], int iloscOsob) {
     getch();
 }
 
-void wyszukajPoNazwisku(Osoba osoby [], int iloscOsob) {
+void wyszukajPoNazwisku(int iloscOsob) {
 
     string nazwisko;
     system("cls");
@@ -147,7 +153,7 @@ void wyszukajPoNazwisku(Osoba osoby [], int iloscOsob) {
     getch();
 }
 
-wyswietlWszystkieKontakty(Osoba osoby [], int iloscOsob) {
+wyswietlWszystkieKontakty(int iloscOsob) {
 
     system("cls");
     cout << "\tWSZYSTKIE KONTAKTY" << endl;
@@ -168,11 +174,10 @@ wyswietlWszystkieKontakty(Osoba osoby [], int iloscOsob) {
 
 int main() {
 
-    Osoba osoby[1000];
     int iloscOsob = 0;
     char wybor;
 
-    iloscOsob = wczytywanieKontaktowZPliku(osoby, iloscOsob);
+    iloscOsob = wczytywanieKontaktowZPliku(iloscOsob);
 
     while(1) {
         system("cls");
@@ -186,7 +191,7 @@ int main() {
         cin >> wybor;
 
         if(wybor == '1') {
-            iloscOsob = dodajOsobeDoKontaktow(osoby, iloscOsob);
+            iloscOsob = dodajOsobeDoKontaktow(iloscOsob);
 
         } else if(wybor == '2') {
             system("cls");
@@ -198,15 +203,15 @@ int main() {
             cin >> wybor;
 
             if(wybor == '1') {
-                wyszukajPoImieniu(osoby, iloscOsob);
+                wyszukajPoImieniu(iloscOsob);
             } else if(wybor == '2') {
-                wyszukajPoNazwisku(osoby, iloscOsob);
+                wyszukajPoNazwisku(iloscOsob);
             }
 
         } else if (wybor == '3') {
-            wyswietlWszystkieKontakty(osoby, iloscOsob);
+            wyswietlWszystkieKontakty(iloscOsob);
         } else if(wybor == '9') {
-            zapisywanieKontaktowDoPliku(osoby, iloscOsob);
+            zapisywanieKontaktowDoPliku(iloscOsob);
             system("cls");
             cout << "\tDOWIDZENIA" << endl;
             cout << "*****************************";
