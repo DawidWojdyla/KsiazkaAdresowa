@@ -10,43 +10,53 @@ struct Osoba {
     int id;
     string imie, nazwisko, adres, numerTelefonu, adresEmail;
 };
-
 vector <Osoba> osoby (1);
 
+void wczytywanieOsobyZLinii(string linia, int indexOsoby) {
+    string skladowaLinii = "";
+    int dlugoscLinii = linia.length();
+    int numerWyrazu = 0;
+
+    for(int i = 0; i < dlugoscLinii; i++)
+        if (linia[i] != '|') skladowaLinii += linia[i];
+        else {
+            numerWyrazu++;
+            switch (numerWyrazu) {
+
+            case 1:
+                osoby[indexOsoby].id            = atoi(skladowaLinii.c_str());
+                break;
+            case 2:
+                osoby[indexOsoby].imie          = skladowaLinii;
+                break;
+            case 3:
+                osoby[indexOsoby].nazwisko      = skladowaLinii;
+                break;
+            case 4:
+                osoby[indexOsoby].numerTelefonu = skladowaLinii;
+                break;
+            case 5:
+                osoby[indexOsoby].adresEmail    = skladowaLinii;
+                break;
+            case 6:
+                osoby[indexOsoby].adres         = skladowaLinii;
+                break;
+            }
+            skladowaLinii = "";
+        }
+}
 int wczytywanieKontaktowZPliku(int iloscOsob) {
     fstream plik;
     string linia;
-    int nr_linii = 1;
 
     plik.open("ksiazka_adresowa.txt", ios::in);
 
     if(plik.good()) {
         while(getline(plik, linia)) {
 
-            switch(nr_linii) {
-            case 1:
-                osoby[iloscOsob].id            = iloscOsob+1;
-                osoby[iloscOsob].imie          = linia;
-                break;
-            case 2:
-                osoby[iloscOsob].nazwisko      = linia;
-                break;
-            case 3:
-                osoby[iloscOsob].adres         = linia;
-                break;
-            case 4:
-                osoby[iloscOsob].numerTelefonu = linia;
-                break;
-            case 5:
-                osoby[iloscOsob].adresEmail    = linia;
-                break;
-            }
-            if(nr_linii == 5) {
-                nr_linii = 0;
-                iloscOsob++;
-                osoby.push_back(Osoba());
-            }
-            nr_linii++;
+            wczytywanieOsobyZLinii(linia, iloscOsob);
+            iloscOsob++;
+            osoby.push_back(Osoba());
         }
         plik.close();
         return iloscOsob;
@@ -59,12 +69,14 @@ void zapisywanieKontaktowDoPliku(int iloscOsob) {
     plik.open("ksiazka_adresowa.txt", ios::out);
 
     if(plik.good()) {
-        for(int i=0; i<iloscOsob; i++) {
-            plik << osoby[i].imie << endl;
-            plik << osoby[i].nazwisko << endl;
-            plik << osoby[i].adres << endl;
-            plik << osoby[i].numerTelefonu << endl;
-            plik << osoby[i].adresEmail << endl;
+        for(int i = 0; i < iloscOsob; i++) {
+
+            plik << osoby[i].id << "|";
+            plik << osoby[i].imie << "|";
+            plik << osoby[i].nazwisko << "|";
+            plik << osoby[i].numerTelefonu << "|";
+            plik << osoby[i].adresEmail << "|";
+            plik << osoby[i].adres << "|" << endl;
         }
     }
     plik.close();
