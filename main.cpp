@@ -111,7 +111,7 @@ int dodajOsobeDoKontaktow(int iloscOsob) {
     osoby[iloscOsob].numerTelefonu = numerTelefonu;
     osoby[iloscOsob].adresEmail    = adresEmail;
     if(iloscOsob>0)
-    osoby[iloscOsob].id            = (osoby[iloscOsob-1].id+1);
+        osoby[iloscOsob].id            = (osoby[iloscOsob-1].id+1);
     else osoby[iloscOsob].id       = iloscOsob+1;
 
     zapisywanieKontaktowDoPliku(iloscOsob+1);
@@ -188,67 +188,102 @@ void wyswietlWszystkieKontakty(int iloscOsob) {
 void edytujKontakt(int iloscOsob) {
     system("cls");
     int numerID;
+    bool czyZnaleziono = false;
+    bool czyZmieniono = false;
+    char wybor;
     cout << "Podaj numer ID osoby, ktorej dane chcesz edytowac: ";
     cin >> numerID;
 
     for(int i = 0; i < iloscOsob; i++) {
         if(numerID == osoby[i].id) {
-            cout << "Edytujesz kontakt:" << endl;
-            cout << osoby[i].imie << " " << osoby[i].nazwisko << " ( ID = " << osoby[i].id << " )" << endl;
-            cout << "   " << osoby[i].adres << endl;
-            cout << "   Numer telefonu: " << osoby[i].numerTelefonu << endl;
-            cout << "   Adres e-mail: " << osoby[i].adresEmail << endl << endl;
-            cout << "Podaj nowe dane osoby o ID = " << osoby[i].id << endl;
-            cout << "Podaj imie: ";
-            cin.sync();
-            getline(cin, osoby[i].imie);
-            cout << "Podaj nazwisko: ";
-            cin.sync();
-            getline(cin, osoby[i].nazwisko);
-            cout << "Podaj numer telefonu: ";
-            cin.sync();
-            getline(cin, osoby[i].numerTelefonu);
-            cout << "Podaj adres e-mail: ";
-            cin.sync();
-            getline(cin, osoby[i].adresEmail);
-            cout << "Podaj adres: ";
-            cin.sync();
-            getline(cin, osoby[i].adres);
-            break;
+            czyZnaleziono = true;
+            while (true) {
+                system ("cls");
+                cout << "Edytujesz kontakt:" << endl;
+                cout << "   " << osoby[i].imie << " " << osoby[i].nazwisko << " ( ID = " << osoby[i].id << " )" << endl;
+                cout << "   " << osoby[i].adres << endl;
+                cout << "   Numer telefonu: " << osoby[i].numerTelefonu << endl;
+                cout << "   Adres e-mail: " << osoby[i].adresEmail << endl << endl;
+                cout << "Co chcesz zmienic? " << endl;
+                cout << "1. Imie\n2. Nazwisko\n3. Numer telefonu\n4. Adres e-mail\n5. Adres zamieszkania\n6. Powrot do menu\n\nWcisnij klawisz 1-6: ";
+                cin >> wybor;
+                if(wybor == '1') {
+                    cout << "Podaj imie: ";
+                    cin.sync();
+                    getline(cin, osoby[i].imie);
+                    czyZmieniono = true;
+                } else if(wybor == '2') {
+                    cout << "Podaj nazwisko: ";
+                    cin.sync();
+                    getline(cin, osoby[i].nazwisko);
+                    czyZmieniono = true;
+                } else if(wybor == '3') {
+                    cout << "Podaj numer telefonu: ";
+                    cin.sync();
+                    getline(cin, osoby[i].numerTelefonu);
+                    czyZmieniono = true;
+                } else if(wybor == '4') {
+                    cout << "Podaj adres e-mail: ";
+                    cin.sync();
+                    getline(cin, osoby[i].adresEmail);
+                    czyZmieniono = true;
+                } else if(wybor == '5') {
+                    cout << "Podaj adres: ";
+                    cin.sync();
+                    getline(cin, osoby[i].adres);
+                    czyZmieniono = true;
+                } else if(wybor == '6') break;
+            }
         }
+        if(czyZnaleziono) break;
     }
-    zapisywanieKontaktowDoPliku(iloscOsob);
-    cout << "\nDane zostaly zmienione";
-    Sleep(900);
+    if(!czyZnaleziono) cout << "\nBrak osob o podanym ID";
+    else if (czyZmieniono) {
+        cout << "\nPomyslnie zmieniono dane";
+        zapisywanieKontaktowDoPliku(iloscOsob);
+    } else cout << "\nWracamy do menu glownego";
+
+    Sleep(1500);
 }
 
 int usunKontakt(int iloscOsob) {
 
     system("cls");
     int numerID;
+    bool czyZnaleziono = false;
+    char wybor;
     cout << "Podaj numer ID osoby, ktorej dane chcesz usunac z kontaktow: ";
     cin >> numerID;
-    fstream plik;
-    plik.open("ksiazka_adresowa.txt", ios::out);
 
-    if(plik.good()) {
-        for(int i = 0; i < iloscOsob; i++) {
-            if(osoby[i].id != numerID)
-            {
-            plik << osoby[i].id << "|";
-            plik << osoby[i].imie << "|";
-            plik << osoby[i].nazwisko << "|";
-            plik << osoby[i].numerTelefonu << "|";
-            plik << osoby[i].adresEmail << "|";
-            plik << osoby[i].adres << "|" << endl;
+    for(int i = 0; i < iloscOsob; i++)
+        if (osoby[i].id == numerID) czyZnaleziono = true;
+
+    if(!czyZnaleziono) cout << "Brak osob o podanym ID...";
+    else {
+        cout << "Jezeli na pewno chcesz usunac kontakt o numerze ID = " << numerID <<" wcisnij 't': ";
+        cin >> wybor;
+        if(wybor == 't') {
+            fstream plik;
+            plik.open("ksiazka_adresowa.txt", ios::out);
+            if(plik.good()) {
+                for(int i = 0; i < iloscOsob; i++) {
+                    if(osoby[i].id != numerID) {
+                        plik << osoby[i].id << "|";
+                        plik << osoby[i].imie << "|";
+                        plik << osoby[i].nazwisko << "|";
+                        plik << osoby[i].numerTelefonu << "|";
+                        plik << osoby[i].adresEmail << "|";
+                        plik << osoby[i].adres << "|" << endl;
+                    }
+                }
             }
-        }
-        cout << "Osoba o numerze ID = " << numerID << " zostala usunieta z kontaktow";
+            plik.close();
+            osoby = vector <Osoba> (1);
+            iloscOsob = wczytywanieKontaktowZPliku(0);
+            cout << "Osoba zostala usunieta...";
+        } else cout << "Wracamy do menu glownego bez usuwania kontaktu...";
     }
-    plik.close();
-    osoby = vector <Osoba> (1);
-    iloscOsob = wczytywanieKontaktowZPliku(0);
-    Sleep(900);
+    Sleep(2200);
     return iloscOsob;
 }
 
@@ -269,6 +304,7 @@ int main() {
         cout << "4. Edytuj kontakt" << endl;
         cout << "5. Usun kontakt" << endl;
         cout << "9. Zakoncz" << endl;
+        //cout << "Wielkosc wektora: " << osoby.size() << endl;
 
         cin >> wybor;
 
