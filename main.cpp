@@ -595,6 +595,43 @@ int wyloguj(vector <Adresat> &adresaci, int numerId)
     else cout << "\nNie zostales wylogowany";
     return numerId;
 }
+bool zapiszDaneUzytkownikowDoPliku(vector <Uzytkownik> &uzytkownicy)
+{
+    fstream plik;
+    bool czyZapisano = false;
+    plik.open(nazwaPlikuZUzytkownikami, ios::out);
+    int iloscUzytkownikow = uzytkownicy.size();
+    if(plik.good())
+    {
+        for(int i = 0; i < iloscUzytkownikow; i++)
+        {
+        plik << uzytkownicy[i].id << '|';
+        plik << uzytkownicy[i].nazwa << '|';
+        plik << uzytkownicy[i].haslo << '|' << endl;
+        }
+        plik.close();
+        czyZapisano = true;
+    }
+    return czyZapisano;
+}
+void zmienHaslo(vector <Uzytkownik> &uzytkownicy, int numerId)
+{
+    system("cls");
+    string noweHaslo;
+    cout << "Podaj nowe haslo: ";
+    cin >> noweHaslo;
+    int iloscUzytkownikow = uzytkownicy.size();
+
+    for(int i = 0; i < iloscUzytkownikow; i++)
+        if(uzytkownicy[i].id == numerId)
+    {
+        uzytkownicy[i].haslo = noweHaslo;
+        break;
+    }
+    if(zapiszDaneUzytkownikowDoPliku(uzytkownicy))
+    cout << endl << "\n Haslo zostalo zmienione";
+    Sleep(1800);
+}
 
 int main()
 {
@@ -672,7 +709,7 @@ int main()
             case '6':
                 usunAdresata(adresaci, numerIdZalogowanegoUzytkownika);
                 break;
-            case '7':
+            case '7': zmienHaslo(uzytkownicy, numerIdZalogowanegoUzytkownika);
 
                 break;
             case '8':
