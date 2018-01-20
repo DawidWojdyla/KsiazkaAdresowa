@@ -118,7 +118,6 @@ bool czyIdJestZgodne(string linia, int idUzytkownika)
 {
     string idUzytkownikaWLinii = "";
     string idAdresataWLinii = "";
-    int idAdresataWLiniiInt = 0;
     bool zgodnosc = false;
     int pozycjaSprawdzanegoZnakuWLinii = 0;
     while(true)
@@ -134,13 +133,10 @@ bool czyIdJestZgodne(string linia, int idUzytkownika)
             }
             while(linia[pozycjaSprawdzanegoZnakuWLinii] != '|');
             if(idUzytkownika == atoi(idUzytkownikaWLinii.c_str())) zgodnosc = true;
-            else zgodnosc = false;
             break;
         }
     }
-    idAdresataWLiniiInt = atoi(idAdresataWLinii.c_str());
-    if(NajwyzszaWartoscIdAdresataWPliku < idAdresataWLiniiInt)
-    NajwyzszaWartoscIdAdresataWPliku = idAdresataWLiniiInt;
+    NajwyzszaWartoscIdAdresataWPliku = atoi(idAdresataWLinii.c_str());
     return zgodnosc;
 }
 int wczytywanieAdresatowZPliku(vector <Adresat> &adresaci, int idUzytkownika)
@@ -522,7 +518,6 @@ int znajdzNajwyzszaWartoscIdAdresataWPliku()
     fstream plik;
     string linia = "";
     string idWLinii = "";
-    int idWLiniiInt = 0;
     int najwiekszaWartoscIdWPliku = 0;
     plik.open(nazwaPlikuZAdresatami, ios::in);
     if(plik.good())
@@ -530,9 +525,7 @@ int znajdzNajwyzszaWartoscIdAdresataWPliku()
         while(getline(plik, linia))
         {
             idWLinii = linia.substr(0,linia.find('|'));
-            idWLiniiInt = atoi(idWLinii.c_str());
-            if(najwiekszaWartoscIdWPliku < idWLiniiInt)
-                najwiekszaWartoscIdWPliku = idWLiniiInt;
+            najwiekszaWartoscIdWPliku = atoi(idWLinii.c_str());
         }
      plik.close();
     }
