@@ -118,6 +118,7 @@ bool czyIdJestZgodne(string linia, int idUzytkownika)
 {
     string idUzytkownikaWLinii = "";
     string idAdresataWLinii = "";
+    int idAdresataWLiniiInt = 0;
     bool zgodnosc = false;
     int pozycjaSprawdzanegoZnakuWLinii = 0;
     while(true)
@@ -137,14 +138,15 @@ bool czyIdJestZgodne(string linia, int idUzytkownika)
             break;
         }
     }
-    NajwyzszaWartoscIdAdresataWPliku = atoi(idAdresataWLinii.c_str());
+    idAdresataWLiniiInt = atoi(idAdresataWLinii.c_str());
+    if(NajwyzszaWartoscIdAdresataWPliku < idAdresataWLiniiInt)
+    NajwyzszaWartoscIdAdresataWPliku = idAdresataWLiniiInt;
     return zgodnosc;
 }
 int wczytywanieAdresatowZPliku(vector <Adresat> &adresaci, int idUzytkownika)
 {
     fstream plik;
     string linia;
-
     plik.open(nazwaPlikuZAdresatami, ios::in);
 
     if(plik.good())
@@ -293,7 +295,6 @@ void dodajAdresata(vector <Adresat> &adresaci, int idUzytkownika)
     cin.sync();
     getline(cin, nowyAdresat.adres);
 
-
     nowyAdresat.id = ++NajwyzszaWartoscIdAdresataWPliku;
     adresaci.push_back(nowyAdresat);
     dopisywanieAdresataDoPliku(nowyAdresat, idUzytkownika);
@@ -357,7 +358,6 @@ void wyszukajPoNazwisku(vector <Adresat> &adresaci)
 
 void wyswietlWszystkichAdresatow(vector <Adresat> &adresaci)
 {
-
     system("cls");
     cout << "\tWSZYSTKIE KONTAKTY" << endl;
     cout << "******************************" << endl;
@@ -421,14 +421,14 @@ void edytujDaneAdresata(vector <Adresat> &adresaci, int idUzytkownika)
     system("cls");
     cout << "Podaj numer ID adresata, ktorego dane chcesz edytowac: ";
     cin >> numerID;
-    vector <Adresat>::iterator itr;
 
+    vector <Adresat>::iterator itr;
     for(itr = adresaci.begin(); itr != adresaci.end(); ++itr )
         if (itr->id == numerID)
         {
             czyZnaleziono = true;
             liniaAdresataPrzedEdycja = zwrocLinieZDanymiAdresata(adresaci, itr, idUzytkownika);
-            while (wybor != '6')
+            while(wybor != '6')
             {
                 system ("cls");
                 cout << "Edycja adresata:" << endl;
@@ -448,22 +448,18 @@ void edytujDaneAdresata(vector <Adresat> &adresaci, int idUzytkownika)
                     getline(cin, itr->imie);
                     czyZmieniono = true;
                     break;
-
                 case '2':
-
                     cout << "\nPodaj nowe nazwisko: ";
                     cin.sync();
                     getline(cin, itr->nazwisko);
                     czyZmieniono = true;
                     break;
-
                 case '3':
                     cout << "\nPodaj nowy numer telefonu: ";
                     cin.sync();
                     getline(cin, itr->numerTelefonu);
                     czyZmieniono = true;
                     break;
-
                 case '4':
                     cout << "\nPodaj adres e-mail: ";
                     cin.sync();
@@ -486,7 +482,6 @@ void edytujDaneAdresata(vector <Adresat> &adresaci, int idUzytkownika)
             }
             break;
         }
-
     if(!czyZnaleziono) cout << "\nBrak adresatow o podanym numerze ID" << endl;
     else if (czyZmieniono)
     {
@@ -497,14 +492,15 @@ void edytujDaneAdresata(vector <Adresat> &adresaci, int idUzytkownika)
         adresatPoEdycji.numerTelefonu  = itr->numerTelefonu;
         adresatPoEdycji.adres          = itr->adres;
         liniaAdresataPoEdycji          = zwrocLinieZDanymiAdresata(adresaci, itr, idUzytkownika);
-        adresaci.erase(itr);
         if(usunAdresataZPliku(liniaAdresataPrzedEdycja))
+        {
+        adresaci.erase(itr);
         adresaci.push_back(adresatPoEdycji);
         dopisywanieAdresataDoPliku(adresatPoEdycji, idUzytkownika);
         cout << "\nPomyslnie zmieniono dane";
+        }
     }
     else cout << "\nWracamy do menu glownego, bez zadnych zmian";
-
     Sleep(1500);
 }
 int znajdzNajwyzszaWartoscIdAdresataWPliku()
@@ -515,7 +511,6 @@ int znajdzNajwyzszaWartoscIdAdresataWPliku()
     int idWLiniiInt = 0;
     int najwiekszaWartoscIdWPliku = 0;
     plik.open(nazwaPlikuZAdresatami, ios::in);
-
     if(plik.good())
     {
         while(getline(plik, linia))
@@ -525,11 +520,9 @@ int znajdzNajwyzszaWartoscIdAdresataWPliku()
             if(najwiekszaWartoscIdWPliku < idWLiniiInt)
                 najwiekszaWartoscIdWPliku = idWLiniiInt;
         }
-
      plik.close();
     }
 return najwiekszaWartoscIdWPliku;
-
 }
 
 void usunAdresata(vector <Adresat> &adresaci, int numerIdUzytkownika)
@@ -548,7 +541,6 @@ void usunAdresata(vector <Adresat> &adresaci, int numerIdUzytkownika)
             czyZnaleziono = true;
             break;
         }
-
     if(!czyZnaleziono) cout << "Brak osob o podanym ID, wracamy do menu glownego";
     else
     {
@@ -561,10 +553,7 @@ void usunAdresata(vector <Adresat> &adresaci, int numerIdUzytkownika)
             if(numerID == NajwyzszaWartoscIdAdresataWPliku)
                 NajwyzszaWartoscIdAdresataWPliku = znajdzNajwyzszaWartoscIdAdresataWPliku();
             if(usunAdresataZPliku(liniaZDanymiAdresata))
-            {
                 cout << "Adresat zostal pomyslnie usuniety";
-
-            }
             else
                 cout << "Adresat mogl nie zostac pomyslnie usuniety z pliku";
         }
