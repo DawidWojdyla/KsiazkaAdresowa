@@ -377,6 +377,32 @@ void wyswietlWszystkichAdresatow(vector <Adresat> &adresaci)
     cout<<"Nacisnij dowolny klawisz, aby wrocic do menu glownego";
     getch();
 }
+bool edytujaDaneAdresataWPliku(string liniaZDanymiPrzedEdycja, string liniaZDanymiPoEdycji)
+{
+    bool czyUdaloSieEdytowacAdresataWPliku = false;
+    fstream plik, plikTemp;
+    string liniaTemp = "";
+
+    plik.open(nazwaPlikuZAdresatami, ios::in);
+    plikTemp.open("temp.temp", ios::out);
+
+    if(plik.good() && plikTemp.good())
+    {
+        while(getline(plik, liniaTemp))
+        {
+            if(liniaZDanymiPrzedEdycja != liniaTemp)
+                plikTemp << liniaTemp << endl;
+            else
+                plikTemp << liniaZDanymiPoEdycji << endl;
+        }
+        plik.close();
+        plikTemp.close();
+        czyUdaloSieEdytowacAdresataWPliku = true;
+    }
+    if (remove(nazwaPlikuZAdresatami) || rename("temp.temp", nazwaPlikuZAdresatami))
+        czyUdaloSieEdytowacAdresataWPliku = false;
+    return czyUdaloSieEdytowacAdresataWPliku;
+}
 
 bool usunAdresataZPliku(string liniaZDanymiDoUsuniecia)
 {
@@ -412,7 +438,6 @@ string zwrocLinieZDanymiAdresata(vector <Adresat> &adresaci, vector <Adresat>::i
 }
 void edytujDaneAdresata(vector <Adresat> &adresaci, int idUzytkownika)
 {
-    Adresat adresatPoEdycji;
     string liniaAdresataPrzedEdycja, liniaAdresataPoEdycji;
     int numerID;
     bool czyZnaleziono = false;
@@ -485,20 +510,9 @@ void edytujDaneAdresata(vector <Adresat> &adresaci, int idUzytkownika)
     if(!czyZnaleziono) cout << "\nBrak adresatow o podanym numerze ID" << endl;
     else if (czyZmieniono)
     {
-        adresatPoEdycji.id             = itr ->id;
-        adresatPoEdycji.imie           = itr->imie;
-        adresatPoEdycji.nazwisko       = itr->nazwisko;
-        adresatPoEdycji.adresEmail     = itr->adresEmail;
-        adresatPoEdycji.numerTelefonu  = itr->numerTelefonu;
-        adresatPoEdycji.adres          = itr->adres;
-        liniaAdresataPoEdycji          = zwrocLinieZDanymiAdresata(adresaci, itr, idUzytkownika);
-        if(usunAdresataZPliku(liniaAdresataPrzedEdycja))
-        {
-        adresaci.erase(itr);
-        adresaci.push_back(adresatPoEdycji);
-        dopisywanieAdresataDoPliku(adresatPoEdycji, idUzytkownika);
+        liniaAdresataPoEdycji = zwrocLinieZDanymiAdresata(adresaci, itr, idUzytkownika);
+        if(edytujaDaneAdresataWPliku(liniaAdresataPrzedEdycja, liniaAdresataPoEdycji))
         cout << "\nPomyslnie zmieniono dane";
-        }
     }
     else cout << "\nWracamy do menu glownego, bez zadnych zmian";
     Sleep(1500);
