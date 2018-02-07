@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>310</x>
+      <y>0</y>
+      <w>210</w>
+      <h>340</h>
+    </coordinates>
+    <panel_attributes>Adresat
+--
+-id: INT
+-imie: STRING
+-nawisko: STRING
+-adres: STRING
+-numerTelefonu: STRING
+-adresEmail: STRING
+--
++Adresat
++getId: INT
++getImie: STRING
++getNazwisko: STRING
++getAdres: STRING
++getNumerTelefonu: STRING
++getAdresEmail: STRING
++setId
++setImie
++setNazwisko
++setAdres
++setNumerTelefonu
++setAdresEmail
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>60</x>
+      <y>360</y>
+      <w>500</w>
+      <h>400</h>
+    </coordinates>
+    <panel_attributes>KsiazkaAdresowa
+--
+-adresaci: vector &lt;Adresat&gt;
+-nazwaPlikuZAdresatami: CHAR []
+-najwyzszaWartoscIdAdresataWPliku: INT
+-wybor: CHAR
+--
++dodajAdresata: VOID
++wyszukajPoImieniu: VOID 
++wyszukajPoNazwisku: VOID
++wyswietlWszystkichAdresatow: VOID
++edytujDaneAdresata: VOID
++usunAdresata: VOID
++zakonczProgram: VOID
+-konwerjsaIntNaString: STRING
+-zamienPierwszaLitereNaDuzaPozostaleNaMale: STRING
+-zamienPierwszeLiteryKazdegoWyrazuNaDuzePozostaleNaMale: STRING
+-wczytywanieAdresataZLinii: ADRESAT
+-czyIdJestZgodne: BOOL
+-wczytywanieAdresatowZPliku: INT
+-dopisywanieAdresataDoPliku: VOID
+-edytujaDaneAdresataWPliku: BOOL
+-usunAdresataZPliku: BOOL
+-zwrocLinieZDanymiAdresata: STRING
+-znajdzNajwyzszaWartoscIdAdresataWPliku: INT
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>70</x>
+      <y>30</y>
+      <w>210</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>Uzytkownik
+--
+-id: INT
+-nazwa: STRING
+-haslo: STRING
+--
++Uzytkownik
++getId: INT
++getNazwa: STRING
++getHaslo: STRING
++setID
++setNazwa
++setHaslo
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>590</x>
+      <y>40</y>
+      <w>390</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>Uzytkownicy
+--
+-NumerIdZalogowanegoUzytkownika: INT
+-uzytkownicy: vector &lt;Uzytkownik&gt;
+-nazwaPlikuZUzytkownikami: CHAR []
+--
++logowanie: INT
++rejestracja: VOID
++zmienHaslo: VOID
++wyloguj: INT
+-czyIstniejeUzytkownikOPodanejNazwie: BOOL
+-wczytywanieUzytkownikowZPliku: VOID
+-wczytanieUzytkownikaZLinii: UZYTKOWNIK
+-dopisywanieUzytkownikaDoPliku: VOID
+-dodawanieUzytkownika: VOID
+-zapiszDaneUzytkownikowDoPliku: BOOL
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
