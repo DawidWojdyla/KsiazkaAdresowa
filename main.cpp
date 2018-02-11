@@ -5,12 +5,13 @@
 #include <vector>
 #include <cstdio>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
 char nazwaPlikuZUzytkownikami [] = "Uzytkownicy.txt";
 char nazwaPlikuZAdresatami []    = "Adresaci.txt";
-int NajwyzszaWartoscIdAdresataWPliku = 0;
+int najwyzszaWartoscIdAdresataWPliku = 0;
 
 struct Uzytkownik
 {
@@ -30,6 +31,35 @@ string konwerjsaIntNaString(int liczba)
     string str = ss.str();
 
     return str;
+}
+
+string zamienPierwszaLitereNaDuzaPozostaleNaMale(string tekst)
+{
+    if (!tekst.empty())
+    {
+        transform(tekst.begin(), tekst.end(), tekst.begin(), ::tolower);
+        tekst[0] = toupper(tekst[0]);
+    }
+    return tekst;
+}
+
+string zamienPierwszeLiteryKazdegoWyrazuNaDuzePozostaleNaMale(string tekst)
+{
+    int dlugoscTekstu = tekst.length();
+    string wyraz = "";
+    string tekstGdzieKazdyWyrazZDuzejLitery = "";
+
+    for(int i = 0; i < dlugoscTekstu; i++)
+        {
+            if(tekst[i] != ' ') wyraz += tekst[i];
+            else
+            {
+            tekstGdzieKazdyWyrazZDuzejLitery += zamienPierwszaLitereNaDuzaPozostaleNaMale(wyraz) + " ";
+            wyraz = "";
+            }
+        }
+       tekstGdzieKazdyWyrazZDuzejLitery += zamienPierwszaLitereNaDuzaPozostaleNaMale(wyraz);
+       return tekstGdzieKazdyWyrazZDuzejLitery;
 }
 
 Uzytkownik wczytanieUzytkownikaZLinii(string linia)
@@ -278,9 +308,11 @@ void dodajAdresata(vector <Adresat> &adresaci, int idUzytkownika)
     cout << "Podaj imie: ";
     cin.sync();
     getline(cin, nowyAdresat.imie);
+    nowyAdresat.imie = zamienPierwszeLiteryKazdegoWyrazuNaDuzePozostaleNaMale(nowyAdresat.imie);
     cout << "Podaj nazwisko: ";
     cin.sync();
     getline(cin, nowyAdresat.nazwisko);
+    nowyAdresat.nazwisko = zamienPierwszeLiteryKazdegoWyrazuNaDuzePozostaleNaMale(nowyAdresat.nazwisko);
     cout << "Podaj numer telefonu: ";
     cin.sync();
     getline(cin, nowyAdresat.numerTelefonu);
@@ -303,13 +335,14 @@ void wyszukajPoImieniu(vector <Adresat> &adresaci)
     string imie;
     system("cls");
     bool znaleziono = false;
-    cout << "Podaj imie szukanej adresaci: ";
+    cout << "Podaj imie szukanego adresata\n(mozesz podac czesc imienia lub tylko pierwsza litere): " << endl;
     cin >> imie;
+    imie = zamienPierwszaLitereNaDuzaPozostaleNaMale(imie);
     system("cls");
     int iloscAdresatow = adresaci.size();
     for(int i = 0, numeracja = 1; i < iloscAdresatow; i++)
     {
-        if(adresaci[i].imie == imie)
+        if(adresaci[i].imie.find(imie) != string::npos)
         {
             cout << numeracja << ". " << adresaci[i].imie << " " << adresaci[i].nazwisko << " ( ID = " << adresaci[i].id << " )" << endl;
             cout << "   Numer telefonu: " << adresaci[i].numerTelefonu << endl;
@@ -330,14 +363,15 @@ void wyszukajPoNazwisku(vector <Adresat> &adresaci)
     string nazwisko;
     system("cls");
     bool znaleziono = false;
-    cout << "Podaj nazwisko szukanej adresaci: ";
+    cout << "Podaj nazwisko szukanego adresata \n(mozesz podac tylko poczatek lub pierwsza litere): " << endl;
     cin >> nazwisko;
+    nazwisko = zamienPierwszaLitereNaDuzaPozostaleNaMale(nazwisko);
     system("cls");
     int iloscAdresatow = adresaci.size();
 
     for(int i = 0, numeracja = 1; i < iloscAdresatow; i++)
     {
-        if(adresaci[i].nazwisko == nazwisko)
+        if(adresaci[i].nazwisko.find(nazwisko) != string::npos)
         {
             cout << numeracja << ". " << adresaci[i].imie << " " << adresaci[i].nazwisko << " ( ID = " << adresaci[i].id << " )" << endl;
             cout << "   Numer telefonu: " << adresaci[i].numerTelefonu << endl;
@@ -365,9 +399,9 @@ void wyswietlWszystkichAdresatow(vector <Adresat> &adresaci)
         for(int i = 0; i < iloscAdresatow; i++)
         {
             cout << i+1 << ". " << adresaci[i].imie << " " << adresaci[i].nazwisko << " ( ID = " << adresaci[i].id << " )" << endl;
-            cout << "   " << adresaci[i].adres << endl;
             cout << "   Numer telefonu: " << adresaci[i].numerTelefonu << endl;
-            cout << "   Adres e-mail: " << adresaci[i].adresEmail << endl << endl;
+            cout << "   Adres e-mail: " << adresaci[i].adresEmail << endl;
+            cout << "   Adres: " << adresaci[i].adres << endl<<endl;
         }
     }
     cout<<"Nacisnij dowolny klawisz, aby wrocic do menu glownego";
@@ -467,12 +501,14 @@ void edytujDaneAdresata(vector <Adresat> &adresaci, int idUzytkownika)
                     cout << "\nPodaj nowe imie: ";
                     cin.sync();
                     getline(cin, itr->imie);
+                    itr->imie = zamienPierwszeLiteryKazdegoWyrazuNaDuzePozostaleNaMale(itr->imie);
                     czyZmieniono = true;
                     break;
                 case '2':
                     cout << "\nPodaj nowe nazwisko: ";
                     cin.sync();
                     getline(cin, itr->nazwisko);
+                    itr->nazwisko = zamienPierwszeLiteryKazdegoWyrazuNaDuzePozostaleNaMale(itr->nazwisko);
                     czyZmieniono = true;
                     break;
                 case '3':
